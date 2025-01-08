@@ -285,7 +285,7 @@
                 "type": "REPEAT",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "identifier"
+                  "name": "function_declaration_arg"
                 }
               },
               {
@@ -307,6 +307,10 @@
           }
         ]
       }
+    },
+    "function_declaration_arg": {
+      "type": "SYMBOL",
+      "name": "identifier"
     },
     "function_call": {
       "type": "PREC",

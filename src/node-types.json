@@ -256,11 +256,30 @@
           "named": true
         },
         {
+          "type": "function_declaration_arg",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
         {
           "type": "parenthesis",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "function_declaration_arg",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
           "named": true
         }
       ]

@@ -71,7 +71,7 @@ module.exports = grammar({
         seq(
           // Arguments
           $.parenthesis,
-          optional(repeat($.identifier)),
+          optional(repeat($.function_declaration_arg)),
           $.parenthesis,
           // Return type
           $.identifier,
@@ -79,6 +79,8 @@ module.exports = grammar({
           $.block,
         ),
       ),
+    // Alias to $.identifier that is used in function declarations.
+    function_declaration_arg: ($) => $.identifier,
 
     function_call: ($) =>
       prec(
