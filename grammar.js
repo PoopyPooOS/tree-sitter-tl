@@ -24,7 +24,8 @@ module.exports = grammar({
     _statement: ($) =>
       choice($.variable_declaration, $.struct_declaration, $.expression),
 
-    variable_declaration: ($) => seq("let", $.identifier, "=", $.expression),
+    variable_declaration: ($) =>
+      prec.left(1, seq("let", $.identifier, "=", $.expression)),
 
     if_statement: ($) => seq("if", $.expression, $.block),
 
@@ -40,6 +41,7 @@ module.exports = grammar({
         $.string,
         $.boolean,
         $.if_statement,
+        $.keyword,
       ),
 
     binary_expression: ($) =>
@@ -55,12 +57,15 @@ module.exports = grammar({
     unary_expression: ($) => prec.right(2, seq($.unary_operator, $.expression)),
 
     struct_declaration: ($) =>
-      seq(
-        "struct",
-        $.identifier,
-        "{",
-        repeat(seq($.identifier, "=", $.expression, "\n")),
-        "}",
+      prec.left(
+        1,
+        seq(
+          "struct",
+          $.identifier,
+          "{",
+          repeat(seq($.identifier, "=", $.expression, "\n")),
+          "}",
+        ),
       ),
 
     function_declaration: ($) =>
@@ -114,6 +119,6 @@ module.exports = grammar({
 
     type: ($) => choice("bool", "uint", "int", "float", "str", "vec", "obj"),
 
-    keyword: ($) => token(choice("let", "struct", "enum", "if")),
+    keyword: ($) => prec.left(0, choice("let", "struct", "enum", "if")),
   },
 });

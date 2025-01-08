@@ -117,6 +117,10 @@
           "named": true
         },
         {
+          "type": "keyword",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -206,6 +210,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "keyword",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "logical_operator",
@@ -413,6 +422,10 @@
   {
     "type": "comment",
     "named": true
+  },
+  {
+    "type": "enum",
+    "named": false
   },
   {
     "type": "false",
