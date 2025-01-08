@@ -40,6 +40,10 @@
       "required": false,
       "types": [
         {
+          "type": "enum_declaration",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         },
@@ -90,6 +94,29 @@
     "fields": {}
   },
   {
+    "type": "enum_declaration",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword",
+          "named": true
+        },
+        {
+          "type": "variant_list",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "escape_sequence",
     "named": true,
     "fields": {}
@@ -131,15 +158,15 @@
           "named": true
         },
         {
-          "type": "if_statement",
-          "named": true
-        },
-        {
           "type": "keyword",
           "named": true
         },
         {
           "type": "number",
+          "named": true
+        },
+        {
+          "type": "object",
           "named": true
         },
         {
@@ -196,25 +223,6 @@
     }
   },
   {
-    "type": "if_statement",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "block",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "interpolation",
     "named": true,
     "fields": {},
@@ -245,6 +253,29 @@
     "fields": {}
   },
   {
+    "type": "object",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "assignment_operator",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "root": true,
@@ -253,6 +284,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "enum_declaration",
+          "named": true
+        },
         {
           "type": "expression",
           "named": true
@@ -296,11 +331,15 @@
       "required": true,
       "types": [
         {
-          "type": "expression",
+          "type": "identifier",
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "keyword",
+          "named": true
+        },
+        {
+          "type": "object",
           "named": true
         }
       ]
@@ -339,19 +378,38 @@
       "required": true,
       "types": [
         {
+          "type": "assignment_operator",
+          "named": true
+        },
+        {
           "type": "expression",
           "named": true
         },
         {
           "type": "identifier",
           "named": true
+        },
+        {
+          "type": "keyword",
+          "named": true
         }
       ]
     }
   },
   {
-    "type": "\n",
-    "named": false
+    "type": "variant_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "!=",
@@ -379,10 +437,6 @@
   },
   {
     "type": ")",
-    "named": false
-  },
-  {
-    "type": ") ",
     "named": false
   },
   {
@@ -418,10 +472,6 @@
     "named": false
   },
   {
-    "type": "=",
-    "named": false
-  },
-  {
     "type": "==",
     "named": false
   },
@@ -444,6 +494,10 @@
   {
     "type": "]",
     "named": false
+  },
+  {
+    "type": "assignment_operator",
+    "named": true
   },
   {
     "type": "bool",

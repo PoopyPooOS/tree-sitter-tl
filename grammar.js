@@ -22,12 +22,18 @@ module.exports = grammar({
 
     // Statements
     _statement: ($) =>
-      choice($.variable_declaration, $.struct_declaration, $.expression),
+      choice(
+        $.variable_declaration,
+        $.struct_declaration,
+        $.enum_declaration,
+        $.expression,
+      ),
 
     variable_declaration: ($) =>
-      prec.left(1, seq("let", $.identifier, "=", $.expression)),
-
-    if_statement: ($) => seq("if", $.expression, $.block),
+      prec.left(
+        1,
+        seq($.keyword, $.identifier, $.assignment_operator, $.expression),
+      ),
 
     // Expressions
     expression: ($) =>
@@ -40,7 +46,7 @@ module.exports = grammar({
         $.number,
         $.string,
         $.boolean,
-        $.if_statement,
+        $.object,
         $.keyword,
         $.delimiter,
         $.bracket,
@@ -49,37 +55,18 @@ module.exports = grammar({
     delimiter: ($) => prec.left(0, choice(".", ",")),
     bracket: ($) => prec.left(0, choice("[", "]", "{", "}")),
 
-    binary_expression: ($) =>
-      prec.left(
-        1,
-        seq(
-          $.expression,
-          choice($.binary_operator, $.comparison_operator, $.logical_operator),
-          $.expression,
-        ),
-      ),
-
-    unary_expression: ($) => prec.right(2, seq($.unary_operator, $.expression)),
-
     struct_declaration: ($) =>
-      prec.left(
-        1,
-        seq(
-          "struct",
-          $.identifier,
-          "{",
-          repeat(seq($.identifier, "=", $.expression, "\n")),
-          "}",
-        ),
-      ),
+      prec.left(1, seq($.keyword, $.identifier, $.object)),
+    enum_declaration: ($) =>
+      prec.left(1, seq($.keyword, $.identifier, $.variant_list)),
 
     function_declaration: ($) =>
       prec(
         1,
         seq(
           "(",
-          optional(repeat(seq($.identifier, choice($.identifier, $.type)))),
-          ") ",
+          optional(repeat(choice($.identifier, $.type))),
+          ")",
           choice($.identifier, $.type),
           $.block,
         ),
@@ -90,9 +77,7 @@ module.exports = grammar({
         1,
         seq(choice($.identifier, "if"), "(", optional($.call_arguments), ")"),
       ),
-
     call_arguments: ($) => seq($.expression, repeat(seq(",", $.expression))),
-
     block: ($) => prec.left(1, seq("{", repeat($._statement), "}")),
 
     // Tokens
@@ -116,14 +101,35 @@ module.exports = grammar({
       ),
     interpolation: ($) => seq("${", $.expression, "}"),
     boolean: ($) => choice("true", "false"),
+    object: ($) =>
+      prec.left(
+        1,
+        seq(
+          "{",
+          repeat(seq($.identifier, $.assignment_operator, $.expression)),
+          "}",
+        ),
+      ),
+    variant_list: ($) => prec.left(2, seq("{", repeat(seq($.identifier)), "}")),
 
+    binary_expression: ($) =>
+      prec.left(
+        1,
+        seq(
+          $.expression,
+          choice($.binary_operator, $.comparison_operator, $.logical_operator),
+          $.expression,
+        ),
+      ),
+    unary_expression: ($) => prec.right(2, seq($.unary_operator, $.expression)),
+
+    assignment_operator: ($) => "=",
     comparison_operator: ($) => choice("==", "!=", ">", ">=", "<", "<="),
     binary_operator: ($) => choice("-", "+", "/", "*", "%"),
     logical_operator: ($) => choice("&&", "||"),
     unary_operator: ($) => "!",
 
     type: ($) => choice("bool", "uint", "int", "float", "str", "vec", "obj"),
-
     keyword: ($) => prec.left(0, choice("let", "struct", "enum", "if")),
   },
 });
