@@ -67,12 +67,15 @@ module.exports = grammar({
 
     function_declaration: ($) =>
       prec(
-        1,
+        2,
         seq(
+          // Arguments
           $.parenthesis,
-          optional(repeat(choice($.identifier, $.type))),
+          optional(repeat($.identifier)),
           $.parenthesis,
-          choice($.identifier, $.type),
+          // Return type
+          $.identifier,
+          // Body
           $.block,
         ),
       ),
@@ -91,7 +94,7 @@ module.exports = grammar({
     block: ($) => prec.left(1, seq($.brace, repeat($._statement), $.brace)),
 
     // Identifiers
-    identifier: ($) => choice($.self, /[a-zA-Z_][a-zA-Z0-9_]*/),
+    identifier: ($) => choice($.self, $.type, /[a-zA-Z_][a-zA-Z0-9_]*/),
     self: ($) => "self",
 
     // Literals

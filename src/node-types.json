@@ -56,8 +56,12 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
+        {
+          "type": "brace",
+          "named": true
+        },
         {
           "type": "enum_declaration",
           "named": true
@@ -202,6 +206,10 @@
           "named": true
         },
         {
+          "type": "parenthesis",
+          "named": true
+        },
+        {
           "type": "string",
           "named": true
         },
@@ -218,7 +226,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "call_arguments",
@@ -226,6 +234,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "parenthesis",
           "named": true
         }
       ]
@@ -248,7 +260,7 @@
           "named": true
         },
         {
-          "type": "type",
+          "type": "parenthesis",
           "named": true
         }
       ]
@@ -264,6 +276,10 @@
       "types": [
         {
           "type": "self",
+          "named": true
+        },
+        {
+          "type": "type",
           "named": true
         }
       ]
@@ -325,6 +341,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "parenthesis",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "source_file",
