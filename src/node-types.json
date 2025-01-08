@@ -60,6 +60,11 @@
     "fields": {}
   },
   {
+    "type": "bracket",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "call_arguments",
     "named": true,
     "fields": {},
@@ -76,6 +81,11 @@
   },
   {
     "type": "comparison_operator",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "delimiter",
     "named": true,
     "fields": {}
   },
@@ -98,6 +108,14 @@
         },
         {
           "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "bracket",
+          "named": true
+        },
+        {
+          "type": "delimiter",
           "named": true
         },
         {
@@ -384,6 +402,10 @@
     "named": false
   },
   {
+    "type": ".",
+    "named": false
+  },
+  {
     "type": "/",
     "named": false
   },
@@ -412,7 +434,15 @@
     "named": false
   },
   {
+    "type": "[",
+    "named": false
+  },
+  {
     "type": "\\",
+    "named": false
+  },
+  {
+    "type": "]",
     "named": false
   },
   {

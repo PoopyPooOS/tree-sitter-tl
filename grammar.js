@@ -42,7 +42,12 @@ module.exports = grammar({
         $.boolean,
         $.if_statement,
         $.keyword,
+        $.delimiter,
+        $.bracket,
       ),
+
+    delimiter: ($) => prec.left(0, choice(".", ",")),
+    bracket: ($) => prec.left(0, choice("[", "]", "{", "}")),
 
     binary_expression: ($) =>
       prec.left(
@@ -70,7 +75,7 @@ module.exports = grammar({
 
     function_declaration: ($) =>
       prec(
-        0,
+        1,
         seq(
           "(",
           optional(repeat(seq($.identifier, choice($.identifier, $.type)))),
@@ -88,7 +93,7 @@ module.exports = grammar({
 
     call_arguments: ($) => seq($.expression, repeat(seq(",", $.expression))),
 
-    block: ($) => seq("{", repeat($._statement), "}"),
+    block: ($) => prec.left(1, seq("{", repeat($._statement), "}")),
 
     // Tokens
     identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
