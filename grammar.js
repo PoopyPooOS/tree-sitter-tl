@@ -43,7 +43,6 @@ module.exports = grammar({
         $.binary_expression,
         $.unary_expression,
         $.identifier,
-        $.self,
         $.number,
         $.string,
         $.boolean,
@@ -85,7 +84,7 @@ module.exports = grammar({
     block: ($) => prec.left(1, seq("{", repeat($._statement), "}")),
 
     // Identifiers
-    identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
+    identifier: ($) => choice($.self, /[a-zA-Z_][a-zA-Z0-9_]*/),
     self: ($) => "self",
 
     // Literals
