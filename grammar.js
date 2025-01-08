@@ -114,6 +114,6 @@ module.exports = grammar({
 
     type: ($) => choice("bool", "uint", "int", "float", "str", "vec", "obj"),
 
-    keyword: ($) => choice("let", "struct", "enum", "if"),
+    keyword: ($) => token(choice("let", "struct", "enum", "if")),
   },
 });
