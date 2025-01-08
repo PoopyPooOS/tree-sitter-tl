@@ -43,17 +43,21 @@ module.exports = grammar({
         $.binary_expression,
         $.unary_expression,
         $.identifier,
+        $.self,
         $.number,
         $.string,
         $.boolean,
         $.object,
+        $.array,
         $.keyword,
         $.delimiter,
         $.bracket,
+        $.brace,
       ),
 
     delimiter: ($) => prec.left(0, choice(".", ",")),
-    bracket: ($) => prec.left(0, choice("[", "]", "{", "}")),
+    bracket: ($) => prec.left(0, choice("[", "]")),
+    brace: ($) => prec.left(0, choice("{", "}")),
 
     struct_declaration: ($) =>
       prec.left(1, seq($.keyword, $.identifier, $.object)),
@@ -80,8 +84,11 @@ module.exports = grammar({
     call_arguments: ($) => seq($.expression, repeat(seq(",", $.expression))),
     block: ($) => prec.left(1, seq("{", repeat($._statement), "}")),
 
-    // Tokens
+    // Identifiers
     identifier: ($) => /[a-zA-Z_][a-zA-Z0-9_]*/,
+    self: ($) => "self",
+
+    // Literals
     number: ($) => choice(/\d+/, /\d+.\d+/),
     string: ($) =>
       seq(
@@ -101,16 +108,18 @@ module.exports = grammar({
       ),
     interpolation: ($) => seq("${", $.expression, "}"),
     boolean: ($) => choice("true", "false"),
+    array: ($) => prec.left(1, seq($.bracket, repeat($.expression), $.bracket)),
     object: ($) =>
       prec.left(
         1,
         seq(
-          "{",
+          $.brace,
           repeat(seq($.identifier, $.assignment_operator, $.expression)),
-          "}",
+          $.brace,
         ),
       ),
-    variant_list: ($) => prec.left(2, seq("{", repeat(seq($.identifier)), "}")),
+    variant_list: ($) =>
+      prec.left(2, seq($.brace, repeat(seq($.identifier)), $.brace)),
 
     binary_expression: ($) =>
       prec.left(

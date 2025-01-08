@@ -118,6 +118,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "self"
+        },
+        {
+          "type": "SYMBOL",
           "name": "number"
         },
         {
@@ -134,6 +138,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "array"
+        },
+        {
+          "type": "SYMBOL",
           "name": "keyword"
         },
         {
@@ -143,6 +151,10 @@
         {
           "type": "SYMBOL",
           "name": "bracket"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "brace"
         }
       ]
     },
@@ -176,7 +188,16 @@
           {
             "type": "STRING",
             "value": "]"
-          },
+          }
+        ]
+      }
+    },
+    "brace": {
+      "type": "PREC_LEFT",
+      "value": 0,
+      "content": {
+        "type": "CHOICE",
+        "members": [
           {
             "type": "STRING",
             "value": "{"
@@ -383,6 +404,10 @@
       "type": "PATTERN",
       "value": "[a-zA-Z_][a-zA-Z0-9_]*"
     },
+    "self": {
+      "type": "STRING",
+      "value": "self"
+    },
     "number": {
       "type": "CHOICE",
       "members": [
@@ -497,6 +522,30 @@
         }
       ]
     },
+    "array": {
+      "type": "PREC_LEFT",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "bracket"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SYMBOL",
+              "name": "expression"
+            }
+          },
+          {
+            "type": "SYMBOL",
+            "name": "bracket"
+          }
+        ]
+      }
+    },
     "object": {
       "type": "PREC_LEFT",
       "value": 1,
@@ -504,8 +553,8 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "STRING",
-            "value": "{"
+            "type": "SYMBOL",
+            "name": "brace"
           },
           {
             "type": "REPEAT",
@@ -528,8 +577,8 @@
             }
           },
           {
-            "type": "STRING",
-            "value": "}"
+            "type": "SYMBOL",
+            "name": "brace"
           }
         ]
       }
@@ -541,8 +590,8 @@
         "type": "SEQ",
         "members": [
           {
-            "type": "STRING",
-            "value": "{"
+            "type": "SYMBOL",
+            "name": "brace"
           },
           {
             "type": "REPEAT",
@@ -557,8 +606,8 @@
             }
           },
           {
-            "type": "STRING",
-            "value": "}"
+            "type": "SYMBOL",
+            "name": "brace"
           }
         ]
       }

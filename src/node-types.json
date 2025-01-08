@@ -1,5 +1,24 @@
 [
   {
+    "type": "array",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "bracket",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "binary_expression",
     "named": true,
     "fields": {},
@@ -60,6 +79,11 @@
   },
   {
     "type": "boolean",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "brace",
     "named": true,
     "fields": {}
   },
@@ -130,11 +154,19 @@
       "required": true,
       "types": [
         {
+          "type": "array",
+          "named": true
+        },
+        {
           "type": "binary_expression",
           "named": true
         },
         {
           "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "brace",
           "named": true
         },
         {
@@ -167,6 +199,10 @@
         },
         {
           "type": "object",
+          "named": true
+        },
+        {
+          "type": "self",
           "named": true
         },
         {
@@ -258,10 +294,14 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "assignment_operator",
+          "named": true
+        },
+        {
+          "type": "brace",
           "named": true
         },
         {
@@ -402,8 +442,12 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
+        {
+          "type": "brace",
+          "named": true
+        },
         {
           "type": "identifier",
           "named": true
@@ -542,6 +586,10 @@
   {
     "type": "obj",
     "named": false
+  },
+  {
+    "type": "self",
+    "named": true
   },
   {
     "type": "str",
