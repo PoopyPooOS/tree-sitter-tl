@@ -50,11 +50,13 @@ module.exports = grammar({
         $.array,
         $.keyword,
         $.delimiter,
+        $.parenthesis,
         $.bracket,
         $.brace,
       ),
 
     delimiter: ($) => prec.left(0, choice(".", ",")),
+    parenthesis: ($) => prec.left(0, choice("(", ")")),
     bracket: ($) => prec.left(0, choice("[", "]")),
     brace: ($) => prec.left(0, choice("{", "}")),
 
@@ -67,9 +69,9 @@ module.exports = grammar({
       prec(
         1,
         seq(
-          "(",
+          $.parenthesis,
           optional(repeat(choice($.identifier, $.type))),
-          ")",
+          $.parenthesis,
           choice($.identifier, $.type),
           $.block,
         ),
@@ -78,10 +80,15 @@ module.exports = grammar({
     function_call: ($) =>
       prec(
         1,
-        seq(choice($.identifier, "if"), "(", optional($.call_arguments), ")"),
+        seq(
+          choice($.identifier, "if"),
+          $.parenthesis,
+          optional($.call_arguments),
+          $.parenthesis,
+        ),
       ),
     call_arguments: ($) => seq($.expression, repeat(seq(",", $.expression))),
-    block: ($) => prec.left(1, seq("{", repeat($._statement), "}")),
+    block: ($) => prec.left(1, seq($.brace, repeat($._statement), $.brace)),
 
     // Identifiers
     identifier: ($) => choice($.self, /[a-zA-Z_][a-zA-Z0-9_]*/),
