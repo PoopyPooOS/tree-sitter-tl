@@ -216,8 +216,8 @@
             "named": true
           },
           {
-            "type": "if",
-            "named": false
+            "type": "keyword",
+            "named": true
           }
         ]
       }

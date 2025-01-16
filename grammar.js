@@ -79,7 +79,7 @@ module.exports = grammar({
       prec(
         1,
         seq(
-          field("name", choice($.identifier, "if")),
+          field("name", choice($.identifier, $.keyword)),
           $.parenthesis,
           optional(field("arguments", $.call_arguments)),
           $.parenthesis,

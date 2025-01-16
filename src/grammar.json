@@ -315,8 +315,8 @@
                   "name": "identifier"
                 },
                 {
-                  "type": "STRING",
-                  "value": "if"
+                  "type": "SYMBOL",
+                  "name": "keyword"
                 }
               ]
             }
