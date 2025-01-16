@@ -73,7 +73,7 @@ module.exports = grammar({
           $.block,
         ),
       ),
-    block: ($) => prec.left(1, seq($.brace, repeat($._statement), $.brace)),
+    block: ($) => prec.left(1, seq($.brace, field("content", repeat($._statement)), $.brace)),
 
     function_call: ($) =>
       prec(
