@@ -53,28 +53,21 @@
   {
     "type": "block",
     "named": true,
-    "fields": {
-      "content": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          },
-          {
-            "type": "variable_declaration",
-            "named": true
-          }
-        ]
-      }
-    },
+    "fields": {},
     "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
           "type": "brace",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "variable_declaration",
           "named": true
         }
       ]

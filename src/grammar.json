@@ -285,14 +285,10 @@
             "name": "brace"
           },
           {
-            "type": "FIELD",
-            "name": "content",
+            "type": "REPEAT",
             "content": {
-              "type": "REPEAT",
-              "content": {
-                "type": "SYMBOL",
-                "name": "_statement"
-              }
+              "type": "SYMBOL",
+              "name": "_statement"
             }
           },
           {
