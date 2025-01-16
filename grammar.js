@@ -24,15 +24,13 @@ module.exports = grammar({
     _statement: ($) =>
       choice(
         $.variable_declaration,
-        $.struct_declaration,
-        $.enum_declaration,
         $.expression,
       ),
 
     variable_declaration: ($) =>
       prec.left(
         1,
-        seq($.keyword, $.identifier, $.assignment_operator, $.expression),
+        seq($.keyword, field("name", $.identifier), $.assignment_operator, field("expr", $.expression)),
       ),
 
     // Expressions
@@ -43,7 +41,8 @@ module.exports = grammar({
         $.binary_expression,
         $.unary_expression,
         $.identifier,
-        $.number,
+        $.integer,
+        $.float,
         $.string,
         $.boolean,
         $.object,
@@ -60,18 +59,13 @@ module.exports = grammar({
     bracket: ($) => prec.left(0, choice("[", "]")),
     brace: ($) => prec.left(0, choice("{", "}")),
 
-    struct_declaration: ($) =>
-      prec.left(1, seq($.keyword, $.identifier, $.object)),
-    enum_declaration: ($) =>
-      prec.left(1, seq($.keyword, $.identifier, $.variant_list)),
-
     function_declaration: ($) =>
       prec(
         2,
         seq(
           // Arguments
           $.parenthesis,
-          optional(repeat($.function_declaration_arg)),
+          optional(repeat(field("argument", $.identifier))),
           $.parenthesis,
           // Return type
           $.identifier,
@@ -79,28 +73,27 @@ module.exports = grammar({
           $.block,
         ),
       ),
-    // Alias to $.identifier that is used in function declarations.
-    function_declaration_arg: ($) => $.identifier,
+    block: ($) => prec.left(1, seq($.brace, repeat($._statement), $.brace)),
 
     function_call: ($) =>
       prec(
         1,
         seq(
-          choice($.identifier, "if"),
+          field("name", choice($.identifier, "if")),
           $.parenthesis,
-          optional($.call_arguments),
+          optional(field("arguments", $.call_arguments)),
           $.parenthesis,
         ),
       ),
     call_arguments: ($) => seq($.expression, repeat(seq(",", $.expression))),
-    block: ($) => prec.left(1, seq($.brace, repeat($._statement), $.brace)),
 
     // Identifiers
-    identifier: ($) => choice($.self, $.type, /[a-zA-Z_][a-zA-Z0-9_]*/),
+    identifier: ($) => choice($.self, /[a-zA-Z_][a-zA-Z0-9_]*/),
     self: ($) => "self",
 
     // Literals
-    number: ($) => choice(/\d+/, /\d+.\d+/),
+    integer: ($) => /\d+/,
+    float: ($) => /\d+.\d+/,
     string: ($) =>
       seq(
         '"',
@@ -129,8 +122,6 @@ module.exports = grammar({
           $.brace,
         ),
       ),
-    variant_list: ($) =>
-      prec.left(2, seq($.brace, repeat(seq($.identifier)), $.brace)),
 
     binary_expression: ($) =>
       prec.left(
@@ -149,7 +140,6 @@ module.exports = grammar({
     logical_operator: ($) => choice("&&", "||"),
     unary_operator: ($) => "!",
 
-    type: ($) => choice("bool", "uint", "int", "float", "str", "vec", "obj"),
-    keyword: ($) => prec.left(0, choice("let", "struct", "enum", "if")),
+    keyword: ($) => prec.left(0, choice("let", "if")),
   },
 });
