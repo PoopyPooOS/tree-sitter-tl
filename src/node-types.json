@@ -89,21 +89,6 @@
     "fields": {}
   },
   {
-    "type": "call_arguments",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "comparison_operator",
     "named": true,
     "fields": {}
@@ -197,12 +182,12 @@
     "type": "function_call",
     "named": true,
     "fields": {
-      "arguments": {
-        "multiple": false,
+      "argument": {
+        "multiple": true,
         "required": false,
         "types": [
           {
-            "type": "call_arguments",
+            "type": "expression",
             "named": true
           }
         ]

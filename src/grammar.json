@@ -330,10 +330,13 @@
             "members": [
               {
                 "type": "FIELD",
-                "name": "arguments",
+                "name": "argument",
                 "content": {
-                  "type": "SYMBOL",
-                  "name": "call_arguments"
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "expression"
+                  }
                 }
               },
               {
@@ -347,31 +350,6 @@
           }
         ]
       }
-    },
-    "call_arguments": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "expression"
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": ","
-              },
-              {
-                "type": "SYMBOL",
-                "name": "expression"
-              }
-            ]
-          }
-        }
-      ]
     },
     "identifier": {
       "type": "CHOICE",

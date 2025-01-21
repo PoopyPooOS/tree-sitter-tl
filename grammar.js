@@ -81,11 +81,10 @@ module.exports = grammar({
         seq(
           field("name", choice($.identifier, $.keyword)),
           $.parenthesis,
-          optional(field("arguments", $.call_arguments)),
+          optional(field("argument", repeat($.expression))),
           $.parenthesis,
         ),
       ),
-    call_arguments: ($) => seq($.expression, repeat(seq(",", $.expression))),
 
     // Identifiers
     identifier: ($) => choice($.self, /[a-zA-Z_][a-zA-Z0-9_]*/),
