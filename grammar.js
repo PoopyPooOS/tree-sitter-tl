@@ -77,7 +77,7 @@ module.exports = grammar({
 
     function_call: ($) =>
       prec(
-        1,
+        3,
         seq(
           field("name", choice($.identifier, $.keyword)),
           $.parenthesis,
