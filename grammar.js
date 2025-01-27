@@ -46,6 +46,7 @@ module.exports = grammar({
         $.string,
         $.boolean,
         $.object,
+        $.field_access,
         $.array,
         $.keyword,
         $.delimiter,
@@ -120,6 +121,11 @@ module.exports = grammar({
           repeat(seq($.identifier, $.assignment_operator, $.expression)),
           $.brace,
         ),
+      ),
+    field_access: ($) =>
+      prec.left(
+        1, // Assign a precedence to avoid conflicts with other expressions
+        seq($.expression, ".", field("field", $.identifier))
       ),
 
     binary_expression: ($) =>
