@@ -1,12 +1,28 @@
 {
-  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "tl",
   "rules": {
     "source_file": {
       "type": "REPEAT",
       "content": {
-        "type": "SYMBOL",
-        "name": "_statement"
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "comment"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_statement"
+          }
+        ]
       }
     },
     "comment": {
@@ -715,10 +731,6 @@
     {
       "type": "PATTERN",
       "value": "\\s"
-    },
-    {
-      "type": "SYMBOL",
-      "name": "comment"
     }
   ],
   "conflicts": [],

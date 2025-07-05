@@ -10,10 +10,10 @@
 module.exports = grammar({
   name: "tl",
 
-  extras: ($) => [/\s/, $.comment], // Handle whitespace and comments
+  extras: ($) => [/\s/], // Handle whitespace and comments
 
   rules: {
-    source_file: ($) => repeat($._statement), // Root rule
+    source_file: ($) => repeat(seq(optional($.comment), $._statement)),
 
     comment: ($) =>
       token(
@@ -21,16 +21,17 @@ module.exports = grammar({
       ),
 
     // Statements
-    _statement: ($) =>
-      choice(
-        $.variable_declaration,
-        $.expression,
-      ),
+    _statement: ($) => choice($.variable_declaration, $.expression),
 
     variable_declaration: ($) =>
       prec.left(
         1,
-        seq($.keyword, field("name", $.identifier), $.assignment_operator, field("expr", $.expression)),
+        seq(
+          $.keyword,
+          field("name", $.identifier),
+          $.assignment_operator,
+          field("expr", $.expression),
+        ),
       ),
 
     // Expressions
@@ -125,7 +126,7 @@ module.exports = grammar({
     field_access: ($) =>
       prec.left(
         1, // Assign a precedence to avoid conflicts with other expressions
-        seq($.expression, ".", field("field", $.identifier))
+        seq($.expression, ".", field("field", $.identifier)),
       ),
 
     binary_expression: ($) =>
