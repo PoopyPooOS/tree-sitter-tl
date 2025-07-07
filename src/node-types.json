@@ -172,6 +172,10 @@
           "named": true
         },
         {
+          "type": "path",
+          "named": true
+        },
+        {
           "type": "string",
           "named": true
         },
@@ -570,6 +574,10 @@
   {
     "type": "n",
     "named": false
+  },
+  {
+    "type": "path",
+    "named": true
   },
   {
     "type": "self",

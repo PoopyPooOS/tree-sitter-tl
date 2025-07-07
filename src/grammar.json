@@ -130,6 +130,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "path"
+        },
+        {
+          "type": "SYMBOL",
           "name": "identifier"
         },
         {
@@ -483,6 +487,10 @@
           "value": "}"
         }
       ]
+    },
+    "path": {
+      "type": "PATTERN",
+      "value": "(.)?(.)?\\/.*"
     },
     "boolean": {
       "type": "CHOICE",

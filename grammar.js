@@ -41,6 +41,7 @@ module.exports = grammar({
         $.function_call,
         $.binary_expression,
         $.unary_expression,
+        $.path,
         $.identifier,
         $.integer,
         $.float,
@@ -112,6 +113,9 @@ module.exports = grammar({
         ),
       ),
     interpolation: ($) => seq("${", $.expression, "}"),
+
+    path: ($) => /(.)?(.)?\/.*/,
+
     boolean: ($) => choice("true", "false"),
     array: ($) => prec.left(1, seq($.bracket, repeat($.expression), $.bracket)),
     object: ($) =>
