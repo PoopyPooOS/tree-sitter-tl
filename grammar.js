@@ -10,146 +10,133 @@
 module.exports = grammar({
   name: "tl",
 
-  extras: ($) => [/\s/], // Handle whitespace and comments
+  extras: ($) => [/\s/, $.comment],
 
   rules: {
-    source_file: ($) => repeat(seq(optional($.comment), $._statement)),
+    source_file: ($) => repeat($._statement),
 
-    comment: ($) =>
-      token(
-        choice(seq("//", /.*/), seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/")),
-      ),
+    comment: (_) => token(seq("//", /.*/)),
 
-    // Statements
-    _statement: ($) => choice($.variable_declaration, $.expression),
+    _statement: ($) => choice($.variable_declaration, $._expr),
 
     variable_declaration: ($) =>
+      seq(
+        $.let,
+        field("name", $.identifier),
+        alias("=", $.assignment_operator),
+        field("value", $._expr),
+      ),
+
+    _expr: ($) =>
+      choice(
+        $.literal,
+        $.function,
+        $.call,
+        $.identifier,
+        $.binary_expr,
+        $.unary_expr,
+        $.field_access,
+      ),
+
+    binary_expr: ($) => prec.left(2, seq($._expr, $.binary_operator, $._expr)),
+    binary_operator: ($) =>
+      token(
+        choice(
+          "+",
+          "-",
+          "*",
+          "/",
+          "%",
+          "==",
+          "!=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "&&",
+          "||",
+        ),
+      ),
+    unary_expr: ($) => prec.left(1, seq($.unary_operator, $._expr)),
+    unary_operator: ($) => token(choice("!", "+", "-")),
+
+    field_access: ($) =>
       prec.left(
         1,
         seq(
-          $.keyword,
-          field("name", $.identifier),
-          $.assignment_operator,
-          field("expr", $.expression),
+          $._expr,
+          alias(".", $.delimiter),
+          choice(prec(1, $.call), prec(0, $.identifier)),
         ),
       ),
 
-    // Expressions
-    expression: ($) =>
-      choice(
-        $.function_declaration,
-        $.function_call,
-        $.binary_expression,
-        $.unary_expression,
-        $.path,
-        $.identifier,
-        $.integer,
-        $.float,
-        $.string,
-        $.boolean,
-        $.object,
-        $.field_access,
-        $.array,
-        $.keyword,
-        $.delimiter,
-        $.parenthesis,
-        $.bracket,
-        $.brace,
-      ),
+    literal: ($) =>
+      choice($.number, $.string, $.boolean, $.path, $.array, $.object),
 
-    delimiter: ($) => prec.left(0, choice(".", ",")),
-    parenthesis: ($) => prec.left(0, choice("(", ")")),
-    bracket: ($) => prec.left(0, choice("[", "]")),
-    brace: ($) => prec.left(0, choice("{", "}")),
+    number: (_) => token(/\d+(\.\d+)?/),
+    boolean: (_) => token(choice("true", "false")),
 
-    function_declaration: ($) =>
-      prec(
-        2,
-        seq(
-          // Arguments
-          $.parenthesis,
-          optional(repeat(field("argument", $.identifier))),
-          $.parenthesis,
-          // Return type
-          $.identifier,
-          // Body
-          $.block,
-        ),
-      ),
-    block: ($) => prec.left(1, seq($.brace, repeat($._statement), $.brace)),
-
-    function_call: ($) =>
-      prec(
-        3,
-        seq(
-          field("name", choice($.identifier, $.keyword)),
-          $.parenthesis,
-          optional(field("argument", repeat($.expression))),
-          $.parenthesis,
-        ),
-      ),
-
-    // Identifiers
-    identifier: ($) => choice($.self, /[a-zA-Z_][a-zA-Z0-9_]*/),
-    self: ($) => "self",
-
-    // Literals
-    integer: ($) => /\d+/,
-    float: ($) => /\d+.\d+/,
     string: ($) =>
       seq(
         '"',
         optional(repeat(choice(/./, $.interpolation, $.escape_sequence))),
         '"',
       ),
-    escape_sequence: ($) =>
-      seq(
-        "\\",
-        choice(
-          '"',
-          "\\",
-          "n", // newline escape
-          "t", // tab escape
+    escape_sequence: ($) => seq("\\", choice('"', "\\", "n", "t")),
+
+    interpolation: ($) => seq(token("${"), $._expr, token("}")),
+
+    path: ($) =>
+      prec(
+        2,
+        seq(
+          token(choice("./", "../", "/")),
+          repeat1(
+            seq(
+              choice($.interpolation, token.immediate(/[a-zA-Z0-9_.-]+/)),
+              optional(token.immediate("/")),
+            ),
+          ),
         ),
       ),
-    interpolation: ($) => seq("${", $.expression, "}"),
 
-    path: ($) => /(.)?(.)?\/.*/,
+    array: ($) =>
+      seq(alias("[", $.bracket), repeat($._expr), alias("]", $.bracket)),
 
-    boolean: ($) => choice("true", "false"),
-    array: ($) => prec.left(1, seq($.bracket, repeat($.expression), $.bracket)),
     object: ($) =>
-      prec.left(
+      seq(
+        alias("{", $.bracket),
+        repeat(seq(field("key", $.identifier), "=", field("value", $._expr))),
+        alias("}", $.bracket),
+      ),
+
+    function: ($) =>
+      seq(
+        alias("(", $.bracket),
+        repeat(field("argument", $.identifier)),
+        alias(")", $.bracket),
+        field("body", $.block),
+      ),
+
+    block: ($) =>
+      seq(alias("{", $.bracket), repeat($._expr), alias("}", $.bracket)),
+
+    call: ($) =>
+      prec(
         1,
         seq(
-          $.brace,
-          repeat(seq($.identifier, $.assignment_operator, $.expression)),
-          $.brace,
+          field("name", $.identifier),
+          alias("(", $.bracket),
+          repeat($._expr),
+          alias(")", $.bracket),
         ),
       ),
-    field_access: ($) =>
-      prec.left(
-        1, // Assign a precedence to avoid conflicts with other expressions
-        seq($.expression, ".", field("field", $.identifier)),
-      ),
 
-    binary_expression: ($) =>
-      prec.left(
-        1,
-        seq(
-          $.expression,
-          choice($.binary_operator, $.comparison_operator, $.logical_operator),
-          $.expression,
-        ),
-      ),
-    unary_expression: ($) => prec.right(2, seq($.unary_operator, $.expression)),
+    identifier: (_) => token(/[a-zA-Z_]\w*/),
+    self: (_) => token("self"),
 
-    assignment_operator: ($) => "=",
-    comparison_operator: ($) => choice("==", "!=", ">", ">=", "<", "<="),
-    binary_operator: ($) => choice("-", "+", "/", "*", "%"),
-    logical_operator: ($) => choice("&&", "||"),
-    unary_operator: ($) => "!",
-
-    keyword: ($) => prec.left(0, choice("let", "if")),
+    // Keywords
+    let: (_) => token("let"),
+    if: (_) => token("if"),
   },
 });
