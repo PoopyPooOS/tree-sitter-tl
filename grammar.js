@@ -10,7 +10,7 @@
 module.exports = grammar({
   name: "tl",
 
-  extras: ($) => [/\s/, $.comment],
+  extras: ($) => [/\s/],
 
   rules: {
     source_file: ($) => repeat($._statement),
@@ -36,6 +36,8 @@ module.exports = grammar({
         $.binary_expr,
         $.unary_expr,
         $.field_access,
+
+        $.comment,
       ),
 
     binary_expr: ($) => prec.left(2, seq($._expr, $.binary_operator, $._expr)),
@@ -77,11 +79,8 @@ module.exports = grammar({
     boolean: (_) => token(choice("true", "false")),
 
     string: ($) =>
-      seq(
-        '"',
-        optional(repeat(choice(/./, $.interpolation, $.escape_sequence))),
-        '"',
-      ),
+      seq('"', repeat(choice(/./, $.interpolation, $.escape_sequence)), '"'),
+
     escape_sequence: ($) => seq("\\", choice('"', "\\", "n", "t")),
 
     interpolation: ($) => seq(token("${"), $._expr, token("}")),
@@ -106,7 +105,13 @@ module.exports = grammar({
     object: ($) =>
       seq(
         alias("{", $.bracket),
-        repeat(seq(field("key", $.identifier), "=", field("value", $._expr))),
+        repeat(
+          seq(
+            field("key", $.identifier),
+            alias("=", $.assignment_operator),
+            field("value", $._expr),
+          ),
+        ),
         alias("}", $.bracket),
       ),
 
@@ -119,7 +124,7 @@ module.exports = grammar({
       ),
 
     block: ($) =>
-      seq(alias("{", $.bracket), repeat($._expr), alias("}", $.bracket)),
+      seq(alias("{", $.bracket), repeat($._statement), alias("}", $.bracket)),
 
     call: ($) =>
       prec(
