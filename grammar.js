@@ -130,7 +130,7 @@ module.exports = grammar({
       prec(
         1,
         seq(
-          field("name", $.identifier),
+          field("name", choice($.identifier, $.if)),
           alias("(", $.bracket),
           repeat($._expr),
           alias(")", $.bracket),
