@@ -14,17 +14,26 @@
         # NOTE: if your language has an external scanner, add it here.
       ],
       "conditions": [
-        ["OS!='win'", {
-          "cflags_c": [
-            "-std=c11",
-          ],
-        }, { # OS == "win"
-          "cflags_c": [
-            "/std:c11",
-            "/utf-8",
-          ],
-        }],
+        [
+          "OS!='win'",
+          {
+            "cflags_c": [
+              "-std=c11",
+            ],
+          },
+          { # OS == "win""cflags_c": [
+              "/std:c11",
+              "/utf-8",
+            ],
+          }
+        ],
       ],
+    }
+    {
+      "target_name": "tl",
+      "sources": [
+        "src/scanner.c"
+      ]
     }
   ]
 }

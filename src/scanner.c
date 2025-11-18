@@ -27,9 +27,18 @@ static bool is_path_char(int32_t c) {
   return c != 0 && c != '\n' && c != '\r' && c != ' ' && c != '\t';
 }
 
-bool tree_sitter_tl_external_scanner_scan(void *payload, TSLexer *lexer,
-                                                 const bool *valid_symbols) {
+bool tree_sitter_tl_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   if (!valid_symbols[PATH_TOKEN]) return false;
+
+  // Prevent capturing comments as paths
+  if (lexer->lookahead == '/') {
+    lexer->mark_end(lexer);
+    lexer->advance(lexer, false);
+  
+    if (lexer->lookahead == '/' || lexer->lookahead == '*') {
+      return false;
+    }
+  }
 
   while (iswspace(lexer->lookahead) && lexer->lookahead != '\n') {
     lexer->advance(lexer, true);

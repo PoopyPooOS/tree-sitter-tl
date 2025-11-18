@@ -7,41 +7,65 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-module.exports = grammar({
+const PREC = {
+  expr: 1,
+  function: 2,
+  let_in: 3,
+  unary: 4,
+  binary: 5,
+};
+
+export default grammar({
   name: "tl",
 
-  extras: ($) => [/\s/],
+  externals: ($) => [$.path],
+
+  extras: ($) => [/\s/, $.comment],
 
   rules: {
-    source_file: ($) => repeat($._statement),
+    source_file: ($) => $.expr,
 
     comment: (_) => token(seq("//", /.*/)),
 
-    _statement: ($) => choice($.variable_declaration, $._expr),
+    expr: ($) => choice($.binary_expr, $.unary_expr, $.postfix_expr),
 
-    variable_declaration: ($) =>
+    postfix_expr: ($) =>
+      prec.right(
+        PREC.expr,
+        seq(
+          $.primary,
+          repeat(choice(field("call", $.call), $.member_access, $.array_index)),
+        ),
+      ),
+
+    call: ($) =>
       seq(
-        $.let,
+        alias("(", $.bracket),
+        repeat(seq($.expr, optional(alias(",", $.comma)))),
+        alias(")", $.bracket),
+      ),
+
+    // TODO: Add support for interpolation here
+    member_access: ($) => seq(alias(".", $.dot), $.identifier),
+
+    array_index: ($) =>
+      seq(alias("[", $.bracket), $.expr, alias("]", $.bracket)),
+
+    primary: ($) => choice($.literal, $.function, $.identifier, $.let_in),
+
+    binding: ($) =>
+      seq(
         field("name", $.identifier),
-        alias("=", $.assignment_operator),
-        field("value", $._expr),
+        alias("=", $.equals),
+        field("expr", $.expr),
       ),
 
-    _expr: ($) =>
-      choice(
-        $.literal,
-        $.function,
-        $.call,
-        $.identifier,
-        $.binary_expr,
-        $.unary_expr,
-        $.field_access,
+    let_in: ($) =>
+      prec(PREC.let_in, seq($.let, repeat($.binding), $.in, $.expr)),
 
-        $.comment,
-      ),
-
-    binary_expr: ($) => prec.left(2, seq($._expr, $.binary_operator, $._expr)),
-    binary_operator: ($) =>
+    binary_expr: ($) =>
+      prec.left(PREC.binary, seq($.expr, $.binary_operator, $.expr)),
+    binary_operator: (_) =>
       token(
         choice(
           "+",
@@ -59,21 +83,13 @@ module.exports = grammar({
           "||",
         ),
       ),
-    unary_expr: ($) => prec.left(1, seq($.unary_operator, $._expr)),
-    unary_operator: ($) => token(choice("!", "+", "-")),
-
-    field_access: ($) =>
-      prec.left(
-        1,
-        seq(
-          $._expr,
-          alias(".", $.delimiter),
-          choice(prec(1, $.call), prec(0, $.identifier)),
-        ),
-      ),
+    unary_expr: ($) => prec.left(PREC.unary, seq($.unary_operator, $.expr)),
+    unary_operator: (_) => token(choice("!", "+", "-")),
 
     literal: ($) =>
-      choice($.number, $.string, $.boolean, $.path, $.array, $.object),
+      choice($.null, $.number, $.string, $.boolean, $.path, $.array, $.object),
+
+    null: (_) => token("null"),
 
     number: (_) => token(/\d+(\.\d+)?/),
     boolean: (_) => token(choice("true", "false")),
@@ -81,26 +97,12 @@ module.exports = grammar({
     string: ($) =>
       seq('"', repeat(choice(/./, $.interpolation, $.escape_sequence)), '"'),
 
-    escape_sequence: ($) => seq("\\", choice('"', "\\", "n", "t")),
+    escape_sequence: (_) => seq("\\", choice('"', "\\", "n", "t")),
 
-    interpolation: ($) => seq(token("${"), $._expr, token("}")),
-
-    path: ($) =>
-      prec(
-        2,
-        seq(
-          token(choice("./", "../", "/")),
-          repeat1(
-            seq(
-              choice($.interpolation, token.immediate(/[a-zA-Z0-9_.-]+/)),
-              optional(token.immediate("/")),
-            ),
-          ),
-        ),
-      ),
+    interpolation: ($) => seq("${", field("expr", $.expr), "}"),
 
     array: ($) =>
-      seq(alias("[", $.bracket), repeat($._expr), alias("]", $.bracket)),
+      seq(alias("[", $.bracket), repeat($.expr), alias("]", $.bracket)),
 
     object: ($) =>
       seq(
@@ -108,40 +110,28 @@ module.exports = grammar({
         repeat(
           seq(
             field("key", $.identifier),
-            alias("=", $.assignment_operator),
-            field("value", $._expr),
+            alias("=", $.equals),
+            field("value", $.expr),
           ),
         ),
         alias("}", $.bracket),
       ),
 
     function: ($) =>
-      seq(
-        alias("(", $.bracket),
-        repeat(field("argument", $.identifier)),
-        alias(")", $.bracket),
-        field("body", $.block),
-      ),
-
-    block: ($) =>
-      seq(alias("{", $.bracket), repeat($._statement), alias("}", $.bracket)),
-
-    call: ($) =>
       prec(
-        1,
+        PREC.function,
         seq(
-          field("name", choice($.identifier, $.if)),
-          alias("(", $.bracket),
-          repeat($._expr),
-          alias(")", $.bracket),
+          field("argument", $.identifier),
+          alias(":", $.colon),
+          field("expr", $.expr),
         ),
       ),
 
     identifier: (_) => token(/[a-zA-Z_]\w*/),
-    self: (_) => token("self"),
 
     // Keywords
     let: (_) => token("let"),
+    in: (_) => token("in"),
     if: (_) => token("if"),
   },
 });
