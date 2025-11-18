@@ -19,14 +19,16 @@
   (primary (identifier) @variable)
   !call)
 
-(function argument: (identifier) @variable.parameter)
+(object key: (identifier) @variable)
 
-(binding
-  name: (identifier) @variable
-  expr: (expr
+(object
+  key: (identifier) @function
+  value: (expr
     (postfix_expr
       (primary
-        (function !argument)))))
+        (function)))))
+
+(binding name: (identifier) @variable)
 
 (binding
   name: (identifier) @function
@@ -34,6 +36,8 @@
     (postfix_expr
       (primary
         (function)))))
+
+(function argument: (identifier) @variable.parameter)
 
 ; Literals
 (null) @constant
