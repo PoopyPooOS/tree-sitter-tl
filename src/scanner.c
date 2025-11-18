@@ -24,7 +24,15 @@ static bool scan_interpolation(TSLexer *lexer) {
 }
 
 static bool is_path_char(int32_t c) {
-  return c != 0 && c != '\n' && c != '\r' && c != ' ' && c != '\t';
+  return c != 0 &&
+         c != '\n' &&
+         c != '\r' &&
+         c != ' ' &&
+         c != '\t' &&
+         c != '(' &&
+         c != ')' &&
+         c != '"' &&
+         c != '\'';
 }
 
 bool tree_sitter_tl_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
