@@ -127,7 +127,7 @@ export default grammar({
         ),
       ),
 
-    identifier: (_) => token(/[a-zA-Z_]\w*/),
+    identifier: ($) => choice(token(/[a-zA-Z_]\w*/), $.if),
 
     // Keywords
     let: (_) => token("let"),

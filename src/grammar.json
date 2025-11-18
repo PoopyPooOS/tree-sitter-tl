@@ -638,11 +638,20 @@
       }
     },
     "identifier": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PATTERN",
-        "value": "[a-zA-Z_]\\w*"
-      }
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "TOKEN",
+          "content": {
+            "type": "PATTERN",
+            "value": "[a-zA-Z_]\\w*"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "if"
+        }
+      ]
     },
     "let": {
       "type": "TOKEN",

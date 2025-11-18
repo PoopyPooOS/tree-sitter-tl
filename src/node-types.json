@@ -180,6 +180,21 @@
     }
   },
   {
+    "type": "identifier",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "if",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "interpolation",
     "named": true,
     "fields": {
@@ -481,7 +496,7 @@
     "named": true
   },
   {
-    "type": "identifier",
+    "type": "if",
     "named": true
   },
   {

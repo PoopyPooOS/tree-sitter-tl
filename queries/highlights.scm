@@ -4,11 +4,14 @@
 [
   (let)
   (in)
+  (if)
 ] @keyword
 
 ; Functions
 (postfix_expr
-  (primary (identifier) @function)
+  (primary
+    (identifier) @function
+    (#not-eq? @function "if"))
   (call))
 
 ; Identifiers
@@ -17,6 +20,13 @@
   !call)
 
 (function argument: (identifier) @variable.parameter)
+
+(binding
+  name: (identifier) @variable
+  expr: (expr
+    (postfix_expr
+      (primary
+        (function !argument)))))
 
 (binding
   name: (identifier) @function
