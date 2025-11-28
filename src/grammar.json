@@ -653,6 +653,13 @@
         }
       ]
     },
+    "with": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "with"
+      }
+    },
     "let": {
       "type": "TOKEN",
       "content": {

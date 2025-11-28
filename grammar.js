@@ -130,6 +130,7 @@ export default grammar({
     identifier: ($) => choice(token(/[a-zA-Z_]\w*/), $.if),
 
     // Keywords
+    with: (_) => token("with"),
     let: (_) => token("let"),
     in: (_) => token("in"),
     if: (_) => token("if"),

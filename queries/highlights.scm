@@ -2,6 +2,7 @@
 
 ; Keywords
 [
+  (with)
   (let)
   (in)
   (if)
