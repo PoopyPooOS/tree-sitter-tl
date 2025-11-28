@@ -392,6 +392,10 @@
         {
           "type": "literal",
           "named": true
+        },
+        {
+          "type": "with_expr",
+          "named": true
         }
       ]
     }
@@ -445,6 +449,25 @@
         },
         {
           "type": "unary_operator",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "with_expr",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expr",
+          "named": true
+        },
+        {
+          "type": "with",
           "named": true
         }
       ]
@@ -529,6 +552,10 @@
   },
   {
     "type": "unary_operator",
+    "named": true
+  },
+  {
+    "type": "with",
     "named": true
   },
   {

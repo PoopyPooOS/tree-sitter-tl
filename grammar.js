@@ -10,9 +10,10 @@
 const PREC = {
   expr: 1,
   function: 2,
-  let_in: 3,
-  unary: 4,
-  binary: 5,
+  with: 3,
+  let_in: 4,
+  unary: 5,
+  binary: 6,
 };
 
 export default grammar({
@@ -51,7 +52,8 @@ export default grammar({
     array_index: ($) =>
       seq(alias("[", $.bracket), $.expr, alias("]", $.bracket)),
 
-    primary: ($) => choice($.literal, $.function, $.identifier, $.let_in),
+    primary: ($) =>
+      choice($.literal, $.function, $.identifier, $.with_expr, $.let_in),
 
     binding: ($) =>
       seq(
@@ -62,6 +64,8 @@ export default grammar({
 
     let_in: ($) =>
       prec(PREC.let_in, seq($.let, repeat($.binding), $.in, $.expr)),
+
+    with_expr: ($) => prec(PREC.with, seq($.with, $.expr, $.expr)),
 
     binary_expr: ($) =>
       prec.left(PREC.binary, seq($.expr, $.binary_operator, $.expr)),

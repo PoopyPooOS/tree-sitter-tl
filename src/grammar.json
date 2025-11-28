@@ -190,6 +190,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "with_expr"
+        },
+        {
+          "type": "SYMBOL",
           "name": "let_in"
         }
       ]
@@ -226,7 +230,7 @@
     },
     "let_in": {
       "type": "PREC",
-      "value": 3,
+      "value": 4,
       "content": {
         "type": "SEQ",
         "members": [
@@ -252,9 +256,30 @@
         ]
       }
     },
+    "with_expr": {
+      "type": "PREC",
+      "value": 3,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "with"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "expr"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "expr"
+          }
+        ]
+      }
+    },
     "binary_expr": {
       "type": "PREC_LEFT",
-      "value": 5,
+      "value": 6,
       "content": {
         "type": "SEQ",
         "members": [
@@ -335,7 +360,7 @@
     },
     "unary_expr": {
       "type": "PREC_LEFT",
-      "value": 4,
+      "value": 5,
       "content": {
         "type": "SEQ",
         "members": [
